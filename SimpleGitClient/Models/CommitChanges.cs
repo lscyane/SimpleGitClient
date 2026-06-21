@@ -16,6 +16,8 @@ namespace SimpleGitClient.Models
         public int AddLines { get; }
         public int DelLines { get; }
 
+        public bool IsChecked { get; set; }
+
 
         public CommitChanges(LibGit2Sharp.TreeEntryChanges treeEntryChanges)
         {
