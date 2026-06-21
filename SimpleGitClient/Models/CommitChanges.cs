@@ -16,6 +16,9 @@ namespace SimpleGitClient.Models
         public int AddLines { get; }
         public int DelLines { get; }
 
+        /// <summary>
+        /// [コミットウインドウ用] コミットするファイルを選択するためのプロパティ。
+        /// </summary>
         public bool IsChecked
         {
             get => _isChecked;
@@ -31,6 +34,7 @@ namespace SimpleGitClient.Models
             this.Status = treeEntryChanges.Status.ToString();
         }
 
+
         public CommitChanges(LibGit2Sharp.StatusEntry statusEntry)
         {
             this.Path = statusEntry.FilePath;
@@ -38,6 +42,7 @@ namespace SimpleGitClient.Models
             this.Status = StatusToString(statusEntry.State);
             this.IsChecked = true;
         }
+
 
         private static string StatusToString(LibGit2Sharp.FileStatus status)
         {
@@ -79,14 +84,17 @@ namespace SimpleGitClient.Models
             return retval.ToArray();
         }
 
+
         public static CommitChanges[] FromRepositoryStatus(LibGit2Sharp.RepositoryStatus status)
         {
             var retval = new List<CommitChanges>();
             foreach (var entry in status)
             {
-                if (entry.State == LibGit2Sharp.FileStatus.Ignored ||
-                    entry.State == LibGit2Sharp.FileStatus.Unaltered)
+                if ((entry.State == LibGit2Sharp.FileStatus.Ignored)
+                 || (entry.State == LibGit2Sharp.FileStatus.Unaltered)
+                ) {
                     continue;
+                }
                 retval.Add(new CommitChanges(entry));
             }
             return retval.ToArray();

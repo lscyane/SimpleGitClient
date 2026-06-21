@@ -1,5 +1,7 @@
-﻿using System.Configuration;
+﻿using SimpleGitClient.Views;
+using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Windows;
 
 namespace SimpleGitClient
@@ -13,17 +15,21 @@ namespace SimpleGitClient
         {
             if ((e.Args.Length >= 2) && (e.Args[0] == "log"))
             {
-                Views.LogWindow log_win = new Views.LogWindow(e.Args[1]);
+                string path = e.Args[1];
+                Views.LogWindow log_win = new Views.LogWindow(path);
                 log_win.Show();
             }
             else if ((e.Args.Length >= 2) && (e.Args[0] == "commit"))
             {
-                Views.CommitWindow commit_win = new Views.CommitWindow(e.Args[1]);
+                string path = e.Args[1];
+                Views.CommitWindow commit_win = new Views.CommitWindow(path);
                 commit_win.Show();
             }
             else
             {
-                this.Shutdown();
+                Views.SettingsWindow settings_win = new Views.SettingsWindow();
+                settings_win.Show();
+                //this.Shutdown();
             }
         }
 
