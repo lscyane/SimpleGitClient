@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SimpleGitClient": {
+      "commandName": "Project",
+      "commandLineArgs": "log D:\\work\\Program\\TSP\\WindowsWPF\\nhDownloader"
+    }
+  }
+}
