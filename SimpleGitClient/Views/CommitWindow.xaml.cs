@@ -21,7 +21,9 @@ namespace SimpleGitClient.Views
     {
         public CommitWindow(string path)
         {
-            this.DataContext = new CommitWindowViewModel(path);
+            var viewModel = new CommitWindowViewModel(path);
+            viewModel.RequestClose += (s, e) => this.Close();
+            this.DataContext = viewModel;
             InitializeComponent();
         }
     }

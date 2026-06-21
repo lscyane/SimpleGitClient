@@ -27,8 +27,8 @@
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
                     <TextBlock Text="チェック：" VerticalAlignment="Center"/>
-                    <Button Content="すべて" Margin="5,0"/>
-                    <Button Content="無し" Margin="5,0"/>
+                    <Button Content="すべて" Command="{Binding SelectAllCommand}" Margin="5,0"/>
+                    <Button Content="無し" Command="{Binding SelectNoneCommand}" Margin="5,0"/>
                 </StackPanel>
                 <ListView ItemsSource="{Binding CommitChanges}" Margin="5">
                     <ListView.View>

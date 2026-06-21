@@ -16,7 +16,12 @@ namespace SimpleGitClient.Models
         public int AddLines { get; }
         public int DelLines { get; }
 
-        public bool IsChecked { get; set; }
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set => SetProperty(ref _isChecked, value);
+        }
+        private bool _isChecked = true;
 
 
         public CommitChanges(LibGit2Sharp.TreeEntryChanges treeEntryChanges)
@@ -24,6 +29,27 @@ namespace SimpleGitClient.Models
             this.Path = treeEntryChanges.Path;
             this.Extension = System.IO.Path.GetExtension(treeEntryChanges.Path);
             this.Status = treeEntryChanges.Status.ToString();
+        }
+
+        public CommitChanges(LibGit2Sharp.StatusEntry statusEntry)
+        {
+            this.Path = statusEntry.FilePath;
+            this.Extension = System.IO.Path.GetExtension(statusEntry.FilePath);
+            this.Status = StatusToString(statusEntry.State);
+            this.IsChecked = true;
+        }
+
+        private static string StatusToString(LibGit2Sharp.FileStatus status)
+        {
+            if (status.HasFlag(LibGit2Sharp.FileStatus.NewInWorkdir)) return "未追跡";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.ModifiedInWorkdir)) return "変更";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.DeletedFromWorkdir)) return "削除";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.RenamedInWorkdir)) return "名前変更";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.NewInIndex)) return "追加 (ステージ済)";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.ModifiedInIndex)) return "変更 (ステージ済)";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.DeletedFromIndex)) return "削除 (ステージ済)";
+            if (status.HasFlag(LibGit2Sharp.FileStatus.RenamedInIndex)) return "名前変更 (ステージ済)";
+            return status.ToString();
         }
 
 
@@ -49,6 +75,19 @@ namespace SimpleGitClient.Models
             foreach (var change in changes.TypeChanged)
             {
                 retval.Add(new CommitChanges(change));
+            }
+            return retval.ToArray();
+        }
+
+        public static CommitChanges[] FromRepositoryStatus(LibGit2Sharp.RepositoryStatus status)
+        {
+            var retval = new List<CommitChanges>();
+            foreach (var entry in status)
+            {
+                if (entry.State == LibGit2Sharp.FileStatus.Ignored ||
+                    entry.State == LibGit2Sharp.FileStatus.Unaltered)
+                    continue;
+                retval.Add(new CommitChanges(entry));
             }
             return retval.ToArray();
         }
