@@ -24,5 +24,15 @@ namespace SimpleGitClient.Views
             this.DataContext = new LogWindowViewModel(path);
             InitializeComponent();
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender is ListViewItem listViewItem)
+             && (listViewItem.DataContext is Models.CommitChanges changes)
+            ) {
+                var vm = (LogWindowViewModel)this.DataContext;
+                Models.WinMerge.OpenDiff(vm.repo, changes);
+            }
+        }
     }
 }

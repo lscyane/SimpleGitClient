@@ -11,7 +11,7 @@ namespace SimpleGitClient.Views
 {
     internal class LogWindowViewModel : ObservableObject
     {
-        LibGit2Sharp.Repository repo;
+        public LibGit2Sharp.Repository repo { get; }
 
         public ObservableCollection<Models.CommitLog> CommitLogs { get; } = new ObservableCollection<Models.CommitLog>();
 

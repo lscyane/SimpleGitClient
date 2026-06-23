@@ -42,6 +42,11 @@
 
             <ListView Grid.Row="4"
                       ItemsSource="{Binding CommitChanges}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="パス" DisplayMemberBinding="{Binding Path}" />
