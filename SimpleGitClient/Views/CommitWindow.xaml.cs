@@ -26,5 +26,14 @@ namespace SimpleGitClient.Views
             this.DataContext = viewModel;
             InitializeComponent();
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListViewItem listViewItem && listViewItem.DataContext is Models.CommitChanges changes)
+            {
+                var vm = (CommitWindowViewModel)this.DataContext;
+                vm.OpenDiffWithWinMerge(changes);
+            }
+        }
     }
 }

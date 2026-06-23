@@ -31,6 +31,11 @@
                     <Button Content="無し" Command="{Binding SelectNoneCommand}" Margin="5,0"/>
                 </StackPanel>
                 <ListView ItemsSource="{Binding CommitChanges}" Margin="5">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView>
                             <GridViewColumn>
