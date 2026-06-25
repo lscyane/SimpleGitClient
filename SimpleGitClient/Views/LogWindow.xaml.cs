@@ -31,7 +31,10 @@ namespace SimpleGitClient.Views
              && (listViewItem.DataContext is Models.CommitChanges changes)
             ) {
                 var vm = (LogWindowViewModel)this.DataContext;
-                Models.WinMerge.OpenDiff(vm.repo, changes);
+                if (vm.SelectedCommitLog != null)
+                {
+                    Models.WinMerge.OpenDiff(vm.repo, vm.SelectedCommitLog, changes);
+                }
             }
         }
     }
