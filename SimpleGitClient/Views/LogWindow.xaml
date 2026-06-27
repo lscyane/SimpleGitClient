@@ -70,8 +70,8 @@
                         <GridViewColumn Header="パス" DisplayMemberBinding="{Binding Path}" />
                         <GridViewColumn Header="拡張子" DisplayMemberBinding="{Binding Extension}" />
                         <GridViewColumn Header="状態" DisplayMemberBinding="{Binding Status, Converter={x:Static vc:StatusTranslate.Converter}}" />
-                        <GridViewColumn Header="追加行数" DisplayMemberBinding="{Binding AddLines}" />
-                        <GridViewColumn Header="削除行数" DisplayMemberBinding="{Binding DelLines}" />
+                        <GridViewColumn Header="追加" DisplayMemberBinding="{Binding AddLines}" />
+                        <GridViewColumn Header="削除" DisplayMemberBinding="{Binding DelLines}" />
                     </GridView>
                 </ListView.View>
             </ListView>

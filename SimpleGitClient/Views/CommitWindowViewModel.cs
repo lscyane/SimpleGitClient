@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LibGit2Sharp;
+using SimpleGitClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -48,15 +50,30 @@ namespace SimpleGitClient.Views
         private void LoadChanges()
         {
             CommitChanges.Clear();
+
+            // 最新コミット（HEAD）のTreeと、現在のワーキングツリー（作業スペース）を比較
+            var patch = repo.Diff.Compare<Patch>(repo.Head.Tip?.Tree, DiffTargets.WorkingDirectory, null, null);
+            foreach (PatchEntryChanges change in patch)
+            {
+                this.CommitChanges.Add(new CommitChanges(change));
+            }
+
+#if false
+            // 無視するファイルをRetrieveStatusで取得する
             var status = repo.RetrieveStatus(new StatusOptions
             {
                 IncludeUntracked = true,
                 RecurseUntrackedDirs = true,
             });
-            foreach (var change in Models.CommitChanges.FromRepositoryStatus(status))
+            foreach (var entry in status)
             {
-                CommitChanges.Add(change);
+                if ((entry.State == LibGit2Sharp.FileStatus.Ignored)
+                 || (entry.State == LibGit2Sharp.FileStatus.Unaltered)
+                ) {
+                    CommitChanges.Add(new CommitChanges(entry));
+                }
             }
+#endif
         }
 
 

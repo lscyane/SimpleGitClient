@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,14 +28,24 @@ namespace SimpleGitClient.Models
         private bool _isChecked = true;
 
 
-        public CommitChanges(LibGit2Sharp.TreeEntryChanges treeEntryChanges)
+        /// <summary>
+        /// コミットウインドウ・ログウインドウ共通 コンストラクタ
+        /// </summary>
+        /// <param name="treeEntryChanges"></param>
+        public CommitChanges(LibGit2Sharp.PatchEntryChanges treeEntryChanges)
         {
             this.Path = treeEntryChanges.Path;
             this.Extension = System.IO.Path.GetExtension(treeEntryChanges.Path);
             this.Status = treeEntryChanges.Status;
+            this.AddLines = treeEntryChanges.LinesAdded;
+            this.DelLines = treeEntryChanges.LinesDeleted;
         }
 
 
+        /// <summary>
+        /// コミットウインドウからの生成
+        /// </summary>
+        /// <param name="statusEntry"></param>
         public CommitChanges(LibGit2Sharp.StatusEntry statusEntry)
         {
             this.Path = statusEntry.FilePath;
@@ -42,49 +53,5 @@ namespace SimpleGitClient.Models
             this.Status = statusEntry.State;
             this.IsChecked = true;
         }
-
-
-        public static CommitChanges[] FromTreeChanges(LibGit2Sharp.TreeChanges changes)
-        {
-            var retval = new List<CommitChanges>();
-            foreach (var change in changes.Added)
-            {
-                retval.Add(new CommitChanges(change));
-            }
-            foreach (var change in changes.Deleted)
-            {
-                retval.Add(new CommitChanges(change));
-            }
-            foreach (var change in changes.Modified)
-            {
-                retval.Add(new CommitChanges(change));
-            }
-            foreach (var change in changes.Renamed)
-            {
-                retval.Add(new CommitChanges(change));
-            }
-            foreach (var change in changes.TypeChanged)
-            {
-                retval.Add(new CommitChanges(change));
-            }
-            return retval.ToArray();
-        }
-
-
-        public static CommitChanges[] FromRepositoryStatus(LibGit2Sharp.RepositoryStatus status)
-        {
-            var retval = new List<CommitChanges>();
-            foreach (var entry in status)
-            {
-                if ((entry.State == LibGit2Sharp.FileStatus.Ignored)
-                 || (entry.State == LibGit2Sharp.FileStatus.Unaltered)
-                ) {
-                    continue;
-                }
-                retval.Add(new CommitChanges(entry));
-            }
-            return retval.ToArray();
-        }
-
     }
 }

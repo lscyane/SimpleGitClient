@@ -38,22 +38,13 @@
                             <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                             <Style.Triggers>
                                 <!-- 状態の種類に応じて行の色を変える -->
-                                <DataTrigger Binding="{Binding Path=Status}" Value="NewInIndex">
+                                <DataTrigger Binding="{Binding Path=Status}" Value="Added">
                                     <Setter Property="Foreground" Value="#9B0080"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Status}" Value="RenamedInIndex">
+                                <DataTrigger Binding="{Binding Path=Status}" Value="Renamed">
                                     <Setter Property="Foreground" Value="Blue"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Status}" Value="DeletedFromIndex">
-                                    <Setter Property="Foreground" Value="Maroon"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Status}" Value="NewInWorkdir">
-                                    <Setter Property="Foreground" Value="#9B0080"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Status}" Value="RenamedInWorkdir">
-                                    <Setter Property="Foreground" Value="Blue"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Status}" Value="DeletedFromWorkdir">
+                                <DataTrigger Binding="{Binding Path=Status}" Value="Deleted">
                                     <Setter Property="Foreground" Value="Maroon"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Status}" Value="Conflicted">
@@ -74,8 +65,8 @@
                             <GridViewColumn Header="パス" DisplayMemberBinding="{Binding Path}" />
                             <GridViewColumn Header="拡張子" DisplayMemberBinding="{Binding Extension}" />
                             <GridViewColumn Header="状態" DisplayMemberBinding="{Binding Status, Converter={x:Static vc:StatusTranslate.Converter}}" />
-                            <GridViewColumn Header="追加行数" DisplayMemberBinding="{Binding AddLines}" />
-                            <GridViewColumn Header="削除行数" DisplayMemberBinding="{Binding DelLines}" />
+                            <GridViewColumn Header="追加" DisplayMemberBinding="{Binding AddLines}" />
+                            <GridViewColumn Header="削除" DisplayMemberBinding="{Binding DelLines}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LibGit2Sharp;
+using SimpleGitClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,10 +28,10 @@ namespace SimpleGitClient.Views
                     if (parent != null)
                     {
                         this.CommitChanges.Clear();
-                        var changes = repo.Diff.Compare<LibGit2Sharp.TreeChanges>(parent.Tree, _selectedCommitLog.Tree);
-                        foreach (var change in Models.CommitChanges.FromTreeChanges(changes))
+                        var patch = repo.Diff.Compare<Patch>(parent.Tree, _selectedCommitLog.Tree);
+                        foreach (PatchEntryChanges change in patch)
                         {
-                            this.CommitChanges.Add(change);
+                            this.CommitChanges.Add(new CommitChanges(change));
                         }
                     }
                     else
