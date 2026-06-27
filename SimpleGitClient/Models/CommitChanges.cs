@@ -12,7 +12,7 @@ namespace SimpleGitClient.Models
     {
         public string Path { get; }
         public string Extension { get; }
-        public string Status { get; }
+        public Enum Status { get; }
         public int AddLines { get; }
         public int DelLines { get; }
 
@@ -31,7 +31,7 @@ namespace SimpleGitClient.Models
         {
             this.Path = treeEntryChanges.Path;
             this.Extension = System.IO.Path.GetExtension(treeEntryChanges.Path);
-            this.Status = treeEntryChanges.Status.ToString();
+            this.Status = treeEntryChanges.Status;
         }
 
 
@@ -39,22 +39,8 @@ namespace SimpleGitClient.Models
         {
             this.Path = statusEntry.FilePath;
             this.Extension = System.IO.Path.GetExtension(statusEntry.FilePath);
-            this.Status = StatusToString(statusEntry.State);
+            this.Status = statusEntry.State;
             this.IsChecked = true;
-        }
-
-
-        private static string StatusToString(LibGit2Sharp.FileStatus status)
-        {
-            if (status.HasFlag(LibGit2Sharp.FileStatus.NewInWorkdir)) return "未追跡";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.ModifiedInWorkdir)) return "変更";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.DeletedFromWorkdir)) return "削除";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.RenamedInWorkdir)) return "名前変更";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.NewInIndex)) return "追加 (ステージ済)";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.ModifiedInIndex)) return "変更 (ステージ済)";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.DeletedFromIndex)) return "削除 (ステージ済)";
-            if (status.HasFlag(LibGit2Sharp.FileStatus.RenamedInIndex)) return "名前変更 (ステージ済)";
-            return status.ToString();
         }
 
 
