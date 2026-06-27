@@ -25,7 +25,41 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Hash}" Width="60"/>
-                        <GridViewColumn Header="メッセージ" DisplayMemberBinding="{Binding MessageShort}" />
+                        <GridViewColumn Header="メッセージ">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <!-- ブランチ -->
+                                        <ItemsControl ItemsSource="{Binding Branches}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border x:Name="BranchBorder" Background="#00C300" CornerRadius="3" Margin="2,0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Name}" x:Name="BranchText" Foreground="White" FontWeight="Bold" Margin="4,0"/>
+                                                    </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding Type}" Value="Remote">
+                                                            <Setter TargetName="BranchBorder" Property="Background" Value="#FFDDAA"/>
+                                                            <Setter TargetName="BranchText" Property="Foreground" Value="Black"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Type}" Value="Current">
+                                                            <Setter TargetName="BranchBorder" Property="Background" Value="#C80000"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <!-- メッセージ -->
+                                        <TextBlock Text="{Binding MessageShort}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                         <GridViewColumn Header="作者" DisplayMemberBinding="{Binding Auther}" />
                         <GridViewColumn Header="日時" DisplayMemberBinding="{Binding CommitTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" />
                     </GridView>
@@ -67,7 +101,16 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="パス" DisplayMemberBinding="{Binding Path}" />
+                        <GridViewColumn Header="パス">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image />
+                                        <TextBlock Text="{Binding Path}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                         <GridViewColumn Header="拡張子" DisplayMemberBinding="{Binding Extension}" />
                         <GridViewColumn Header="状態" DisplayMemberBinding="{Binding Status, Converter={x:Static vc:StatusTranslate.Converter}}" />
                         <GridViewColumn Header="追加" DisplayMemberBinding="{Binding AddLines}" />

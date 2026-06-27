@@ -53,7 +53,7 @@ namespace SimpleGitClient.Views
             // コミットを調べる
             foreach (LibGit2Sharp.Commit commit in repo.Commits)
             {
-                this.CommitLogs.Add(new Models.CommitLog(commit));
+                this.CommitLogs.Add(new Models.CommitLog(commit, repo));
             }
         }
     }
