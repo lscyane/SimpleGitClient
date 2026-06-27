@@ -22,6 +22,34 @@ namespace SimpleGitClient.Views
 
         public ObservableCollection<Models.CommitChanges> CommitChanges { get; private set; } = new ObservableCollection<Models.CommitChanges>();
 
+
+        #region Window位置関連プロパティ
+        public double WindowLeft
+        {
+            get => Properties.EnvSettings.Default.CommitWindowLeft;
+            set => Properties.EnvSettings.Default.CommitWindowLeft = value;
+        }
+
+        public double WindowTop
+        {
+            get => Properties.EnvSettings.Default.CommitWindowTop;
+            set => Properties.EnvSettings.Default.CommitWindowTop = value;
+        }
+
+        public double WindowWidth
+        {
+            get => Properties.EnvSettings.Default.CommitWindowWidth;
+            set => Properties.EnvSettings.Default.CommitWindowWidth = value;
+        }
+
+        public double WindowHeight
+        {
+            get => Properties.EnvSettings.Default.CommitWindowHeight;
+            set => Properties.EnvSettings.Default.CommitWindowHeight = value;
+        }
+        #endregion
+
+
         /// <summary>
         /// コミットメッセージテキストボックスの内容
         /// </summary>
@@ -151,7 +179,6 @@ namespace SimpleGitClient.Views
             }
         });
         private RelayCommand? _SelectNoneCommand = null;
-
 
 
         /// <summary>

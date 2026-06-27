@@ -7,7 +7,11 @@
         xmlns:v="clr-namespace:SimpleGitClient.Views"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance v:LogWindowViewModel}"
-        Title="LogWindow" Height="600" Width="600">
+        Top="{Binding Path=WindowTop, Mode=TwoWay}"
+        Left="{Binding Path=WindowLeft, Mode=TwoWay}"
+        Width="{Binding Path=WindowWidth, Mode=TwoWay}"
+        Height="{Binding Path=WindowHeight, Mode=TwoWay}"
+        Title="LogWindow">
     <DockPanel>
 
         <Grid>

@@ -33,9 +33,15 @@ namespace SimpleGitClient
             }
         }
 
+
+        /// <summary>
+        /// アプリケーション終了時（<see cref="Application.Exit"/>）に実行されるイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-
+            SimpleGitClient.Properties.EnvSettings.Default.Save();
         }
     }
 

@@ -16,6 +16,34 @@ namespace SimpleGitClient.Views
 
         public ObservableCollection<Models.CommitLog> CommitLogs { get; } = new ObservableCollection<Models.CommitLog>();
 
+
+        #region Window位置関連プロパティ
+        public double WindowLeft
+        {
+            get => Properties.EnvSettings.Default.LogWindowLeft;
+            set => Properties.EnvSettings.Default.LogWindowLeft = value;
+        }
+
+        public double WindowTop
+        {
+            get => Properties.EnvSettings.Default.LogWindowTop;
+            set => Properties.EnvSettings.Default.LogWindowTop = value;
+        }
+
+        public double WindowWidth
+        {
+            get => Properties.EnvSettings.Default.LogWindowWidth;
+            set => Properties.EnvSettings.Default.LogWindowWidth = value;
+        }
+
+        public double WindowHeight
+        {
+            get => Properties.EnvSettings.Default.LogWindowHeight;
+            set => Properties.EnvSettings.Default.LogWindowHeight = value;
+        }
+        #endregion
+
+
         public Models.CommitLog? SelectedCommitLog
         {
             get => this._selectedCommitLog;
