@@ -42,10 +42,27 @@
             <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" Background="Transparent"/>
 
             <ListView Grid.Row="4"
-                      ItemsSource="{Binding CommitChanges}">
+                      ItemsSource="{Binding CommitChanges}"
+                      Foreground="#0032A0">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
+                        <!-- ダブルクリックで差分を開く -->
                         <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                        <Style.Triggers>
+                            <!-- 状態の種類に応じて行の色を変える -->
+                            <DataTrigger Binding="{Binding Path=Status}" Value="Added">
+                                <Setter Property="Foreground" Value="#9B0080"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Status}" Value="Renamed">
+                                <Setter Property="Foreground" Value="Blue"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Status}" Value="Deleted">
+                                <Setter Property="Foreground" Value="Maroon"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Status}" Value="Conflicted">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.View>

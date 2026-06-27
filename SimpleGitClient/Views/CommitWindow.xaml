@@ -34,7 +34,32 @@
                 <ListView ItemsSource="{Binding CommitChanges}" Margin="5">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
+                            <!-- ダブルクリックで差分を開く -->
                             <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                            <Style.Triggers>
+                                <!-- 状態の種類に応じて行の色を変える -->
+                                <DataTrigger Binding="{Binding Path=Status}" Value="NewInIndex">
+                                    <Setter Property="Foreground" Value="#9B0080"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Status}" Value="RenamedInIndex">
+                                    <Setter Property="Foreground" Value="Blue"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Status}" Value="DeletedFromIndex">
+                                    <Setter Property="Foreground" Value="Maroon"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Status}" Value="NewInWorkdir">
+                                    <Setter Property="Foreground" Value="#9B0080"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Status}" Value="RenamedInWorkdir">
+                                    <Setter Property="Foreground" Value="Blue"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Status}" Value="DeletedFromWorkdir">
+                                    <Setter Property="Foreground" Value="Maroon"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Status}" Value="Conflicted">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.View>
