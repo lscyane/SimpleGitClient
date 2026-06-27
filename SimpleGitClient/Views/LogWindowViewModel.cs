@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LibGit2Sharp;
+using lscyane.Core.Mvvm;
 using SimpleGitClient.Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace SimpleGitClient.Views
 {
     internal class LogWindowViewModel : ObservableObject
     {
+        private readonly IDialogService _DialogService;
         public LibGit2Sharp.Repository repo { get; }
 
         public ObservableCollection<Models.CommitLog> CommitLogs { get; } = new ObservableCollection<Models.CommitLog>();
@@ -79,9 +81,15 @@ namespace SimpleGitClient.Views
         public ObservableCollection<Models.CommitChanges> CommitChanges { get; private set; } = new ObservableCollection<Models.CommitChanges>();
 
 
-        public LogWindowViewModel(string path)
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="dialogService"></param>
+        /// <param name="path"></param>
+        public LogWindowViewModel(IDialogService dialogService, string path)
         {
             this.repo = new LibGit2Sharp.Repository(path);
+            this._DialogService = dialogService;
 
             // コミットを調べる
             foreach (LibGit2Sharp.Commit commit in repo.Commits)
@@ -89,6 +97,7 @@ namespace SimpleGitClient.Views
                 this.CommitLogs.Add(new Models.CommitLog(commit, repo));
             }
         }
+
 
         public void ResetBranchHard(Models.CommitLog commitLog, string branchName)
         {
@@ -111,6 +120,61 @@ namespace SimpleGitClient.Views
 
             RefreshLogs();
         }
+
+
+        public void CheckoutCommit(Models.CommitLog commitLog)
+        {
+            var dialog = new DialogParameters();
+            dialog.Add("Title", "ここへ切り替え/チェックアウト");
+            dialog.Add("Branches", repo.Branches);
+            dialog.Add("CommitHash", commitLog.Hash);
+
+            this._DialogService.ShowDialog(typeof(Dialogs.CheckoutDialogViewModel), dialog, (result, param) =>
+            {
+                if (!result || param is not DialogParameters dp) return;
+
+                var targetType       = dp.GetValue<string>("TargetType")    ?? string.Empty;
+                var isCreateNewBranch = dp.GetValue<bool>("IsCreateNewBranch");
+                var newBranchName    = dp.GetValue<string>("NewBranchName") ?? string.Empty;
+
+                if (targetType == "Branch")
+                {
+                    var branchName = dp.GetValue<string>("SelectedBranch") ?? string.Empty;
+                    var branch = repo.Branches[branchName];
+                    if (branch == null) return;
+
+                    if (isCreateNewBranch && !string.IsNullOrWhiteSpace(newBranchName))
+                    {
+                        var newBranch = repo.CreateBranch(newBranchName, branch.Tip);
+                        LibGit2Sharp.Commands.Checkout(repo, newBranch);
+                    }
+                    else
+                    {
+                        LibGit2Sharp.Commands.Checkout(repo, branch);
+                    }
+                }
+                else if (targetType == "Commit")
+                {
+                    var hash = dp.GetValue<string>("CommitHash") ?? string.Empty;
+                    var commit = repo.Lookup<LibGit2Sharp.Commit>(hash);
+                    if (commit == null) return;
+
+                    if (isCreateNewBranch && !string.IsNullOrWhiteSpace(newBranchName))
+                    {
+                        var newBranch = repo.CreateBranch(newBranchName, commit);
+                        LibGit2Sharp.Commands.Checkout(repo, newBranch);
+                    }
+                    else
+                    {
+                        // デタッチド HEAD 状態でチェックアウト
+                        LibGit2Sharp.Commands.Checkout(repo, commit.Sha);
+                    }
+                }
+
+                RefreshLogs();
+            });
+        }
+
 
         private void RefreshLogs()
         {

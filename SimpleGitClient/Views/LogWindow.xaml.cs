@@ -1,4 +1,5 @@
 ﻿using LibGit2Sharp;
+using lscyane.Wpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,11 @@ namespace SimpleGitClient.Views
     {
         public LogWindow(string path)
         {
-            this.DataContext = new LogWindowViewModel(path);
+            // ダイアログサービスの設定
+            lscyane.Wpf.Services.DialogService.Main = new lscyane.Wpf.Services.DialogService(this);
+            lscyane.Wpf.Services.DialogService.Main.RegisterDialog<Dialogs.CheckoutDialog, Dialogs.CheckoutDialogViewModel>();
+
+            this.DataContext = new LogWindowViewModel(DialogService.Main, path);
             InitializeComponent();
         }
 
@@ -57,14 +62,23 @@ namespace SimpleGitClient.Views
                 return;
             }
 
-            // コンテキストメニューに「ここにリセット」を追加する
             var vm = (LogWindowViewModel)DataContext;
             var menu = new ContextMenu();
+
+            // コンテキストメニューに「ここにリセット」を追加する
             var menuItem = new MenuItem
             {
                 Header = $"\"{vm.CurrentBrancheName}\"をここにリセット"
             };
             menuItem.Click += (s, args) => vm.ResetBranchHard(commitLog, vm.CurrentBrancheName);
+            menu.Items.Add(menuItem);
+
+            // コンテキストメニューに「ここへ切り替え/チェックアウト」を追加する
+            menuItem = new MenuItem
+            {
+                Header = $"ここへ切り替え/チェックアウト"
+            };
+            menuItem.Click += (s, args) => vm.CheckoutCommit(commitLog);
             menu.Items.Add(menuItem);
 
             ((ListView)sender).ContextMenu = menu;
