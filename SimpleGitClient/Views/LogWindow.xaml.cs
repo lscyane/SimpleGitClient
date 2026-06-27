@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibGit2Sharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,47 @@ namespace SimpleGitClient.Views
                     Models.WinMerge.OpenDiff(vm.repo, vm.SelectedCommitLog, changes);
                 }
             }
+        }
+
+        private void CommitLogListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            // ログが無い時はコンテキストメニューを表示しない
+            var listViewItem = FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
+            if (listViewItem == null)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // 選択されているアイテムが無い場合時はコンテキストメニューを表示しない
+            var commitLog = listViewItem.DataContext as Models.CommitLog;
+            if (commitLog == null)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // コンテキストメニューに「ここにリセット」を追加する
+            var vm = (LogWindowViewModel)DataContext;
+            var menu = new ContextMenu();
+            var menuItem = new MenuItem
+            {
+                Header = $"\"{vm.CurrentBrancheName}\"をここにリセット"
+            };
+            menuItem.Click += (s, args) => vm.ResetBranchHard(commitLog, vm.CurrentBrancheName);
+            menu.Items.Add(menuItem);
+
+            ((ListView)sender).ContextMenu = menu;
+        }
+
+        private static T? FindAncestor<T>(DependencyObject current) where T : DependencyObject
+        {
+            while (current != null)
+            {
+                if (current is T t) return t;
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return null;
         }
     }
 }

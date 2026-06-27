@@ -24,8 +24,15 @@
             </Grid.RowDefinitions>
 
             <ListView Grid.Row="0"
+                      x:Name="CommitLogListView"
                       ItemsSource="{Binding CommitLogs}"
-                      SelectedItem="{Binding SelectedCommitLog}">
+                      SelectedItem="{Binding SelectedCommitLog}"
+                      ContextMenuOpening="CommitLogListView_ContextMenuOpening">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <!-- ダミーで用意しておかないと初回の右クリックでメニューが出ない -->
+                    </ContextMenu>
+                </ListView.ContextMenu>
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Hash}" Width="60"/>

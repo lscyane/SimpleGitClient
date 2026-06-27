@@ -16,6 +16,11 @@ namespace SimpleGitClient.Views
 
         public ObservableCollection<Models.CommitLog> CommitLogs { get; } = new ObservableCollection<Models.CommitLog>();
 
+        public string CurrentBrancheName
+        {
+            get => repo.Head.FriendlyName;
+        }
+
 
         #region Window位置関連プロパティ
         public double WindowLeft
@@ -82,6 +87,37 @@ namespace SimpleGitClient.Views
             foreach (LibGit2Sharp.Commit commit in repo.Commits)
             {
                 this.CommitLogs.Add(new Models.CommitLog(commit, repo));
+            }
+        }
+
+        public void ResetBranchHard(Models.CommitLog commitLog, string branchName)
+        {
+            var branch = repo.Branches[branchName];
+            if (branch == null) return;
+
+            var commit = repo.Lookup<LibGit2Sharp.Commit>(commitLog.Hash);
+            if (commit == null) return;
+
+            if (branch.IsCurrentRepositoryHead)
+            {
+                // 現在のブランチ → Hard reset（インデックス・作業ツリーも更新）
+                repo.Reset(ResetMode.Hard, commit);
+            }
+            else
+            {
+                // 別のブランチ → ブランチ参照のみ更新
+                repo.Refs.UpdateTarget(branch.Reference, commit.Sha);
+            }
+
+            RefreshLogs();
+        }
+
+        private void RefreshLogs()
+        {
+            CommitLogs.Clear();
+            foreach (LibGit2Sharp.Commit commit in repo.Commits)
+            {
+                CommitLogs.Add(new Models.CommitLog(commit, repo));
             }
         }
     }
