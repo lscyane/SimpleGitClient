@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SimpleGitClient.Views
 {
@@ -110,7 +111,18 @@ namespace SimpleGitClient.Views
             if (branch.IsCurrentRepositoryHead)
             {
                 // 現在のブランチ → Hard reset（インデックス・作業ツリーも更新）
-                repo.Reset(ResetMode.Hard, commit);
+                try
+                {
+                    repo.Reset(ResetMode.Hard, commit);
+                }
+                catch (LibGit2Sharp.LibGit2SharpException ex)
+                {
+                    MessageBox.Show(
+                        $"Hard Resetに失敗しました。\n別のプロセスがファイルを使用中の可能性があります。\n\n詳細: {ex.Message}",
+                        "エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
             else
             {
